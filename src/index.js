@@ -52,10 +52,11 @@ class Game extends React.Component {
     super(props)
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
+        colRowMoved: null
       }],
       xIsNext: true,
-      stepNumber: 0
+      stepNumber: 0,
     }
   }
 
@@ -63,17 +64,22 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1)
     const currentHistory = history[history.length - 1]
     const squares = currentHistory.squares.slice()
+    let colRowMoved = currentHistory.colRowMoved
 
     if (calculateWinner(squares) || squares[i]) {
       return
     }
 
     squares[i] = this.state.xIsNext ? 'X' : 'O'
+    colRowMoved = getColRowMoved(i)
 
     this.setState({ 
-      history: history.concat([{ squares }]), 
+      history: history.concat([{ 
+        squares,
+        colRowMoved
+      }]), 
       xIsNext: !this.state.xIsNext,
-      stepNumber: history.length
+      stepNumber: history.length,
      })
   }
 
@@ -89,9 +95,9 @@ class Game extends React.Component {
     const currentHistory = history[this.state.stepNumber]
     let winner = calculateWinner(currentHistory.squares)
 
-    const moves = history.map((squares, move) => {
+    const moves = history.map((history, move) => {
       const desc = move ?
-        `Go to move #${ move }` :
+        `Go to move #${ move } ${ history.colRowMoved }` :
         'Go to game start'
 
       return (
@@ -145,6 +151,58 @@ function calculateWinner(squares) {
   }
 
   return null
+}
+
+function getColRowMoved(i) {
+  let col, row
+
+  switch (i) {
+    case 0:
+    case 1:
+    case 2:
+      row = '1'
+      break;
+  
+    case 3:
+    case 4:
+    case 5:
+      row = '2'
+      break;
+
+    case 6:
+    case 7:
+    case 8:
+      row = '3'
+      break;
+
+    default:
+      row = ''
+  }
+
+  switch (i) {
+    case 0:
+    case 3:
+    case 6:
+      col = '1'
+      break;
+  
+    case 1:
+    case 4:
+    case 7:
+      col = '2'
+      break;
+
+    case 2:
+    case 5:
+    case 8:
+      col = '3'
+      break;
+
+    default:
+      col = ''
+  }
+
+  return `(${col}, ${row})`
 }
 
 // ========================================
