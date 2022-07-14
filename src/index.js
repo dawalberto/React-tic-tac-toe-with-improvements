@@ -118,6 +118,10 @@ class Game extends React.Component {
       status = `Next player: ${ this.state.xIsNext ? 'X' : 'O' }`;
     }
 
+    if (currentHistory.squares.every(square => square !== null)) {
+      status = 'Draw'
+    }
+
     return (
       <div className="game">
         <div className="game-board">
