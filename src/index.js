@@ -15,16 +15,6 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
-    return (
-      <Square 
-        key={ Date.now() + Math.random() }
-        value={ this.props.squares[i] }
-        onClick={ () => this.props.onClick(i) } 
-      />
-    );
-  }
-
   render() {
     const rows = 3 
     const cols = 3
@@ -58,6 +48,16 @@ class Board extends React.Component {
 
     return <div>{ board }</div>
   }
+
+  renderSquare(i) {
+    return (
+      <Square 
+        key={ Date.now() + Math.random() }
+        value={ this.props.squares[i] }
+        onClick={ () => this.props.onClick(i) } 
+      />
+    );
+  }
 }
 
 class Game extends React.Component {
@@ -72,36 +72,6 @@ class Game extends React.Component {
       stepNumber: 0,
       orderToggled: false
     }
-  }
-
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1)
-    const currentHistory = history[history.length - 1]
-    const squares = currentHistory.squares.slice()
-    let colRowMoved = currentHistory.colRowMoved
-
-    if (calculateWinner(squares) || squares[i]) {
-      return
-    }
-
-    squares[i] = this.state.xIsNext ? 'X' : 'O'
-    colRowMoved = getColRowMoved(i)
-
-    this.setState({ 
-      history: history.concat([{ 
-        squares,
-        colRowMoved
-      }]), 
-      xIsNext: !this.state.xIsNext,
-      stepNumber: history.length,
-     })
-  }
-
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0
-    })
   }
 
   render() {
@@ -159,6 +129,36 @@ class Game extends React.Component {
         </div>
       </div>
     );
+  }
+
+  handleClick(i) {
+    const history = this.state.history.slice(0, this.state.stepNumber + 1)
+    const currentHistory = history[history.length - 1]
+    const squares = currentHistory.squares.slice()
+    let colRowMoved = currentHistory.colRowMoved
+
+    if (calculateWinner(squares) || squares[i]) {
+      return
+    }
+
+    squares[i] = this.state.xIsNext ? 'X' : 'O'
+    colRowMoved = getColRowMoved(i)
+
+    this.setState({ 
+      history: history.concat([{ 
+        squares,
+        colRowMoved
+      }]), 
+      xIsNext: !this.state.xIsNext,
+      stepNumber: history.length,
+     })
+  }
+
+  jumpTo(step) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0
+    })
   }
 
   toggleOrder() {
