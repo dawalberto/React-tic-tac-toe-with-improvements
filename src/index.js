@@ -70,6 +70,7 @@ class Game extends React.Component {
       }],
       xIsNext: true,
       stepNumber: 0,
+      orderToggled: false
     }
   }
 
@@ -109,9 +110,18 @@ class Game extends React.Component {
     let winner = calculateWinner(currentHistory.squares)
 
     const moves = history.map((historyItem, move) => {
-      let desc = move ?
+      let desc
+
+      if (this.state.orderToggled) {
+        let i = history.length - move
+        desc = i !== 1 ?
+          `Go to move #${ i - 1 } ${ historyItem.colRowMoved }` :
+          'Go to game start'
+      } else {
+        desc = move ?
         `Go to move #${ move } ${ historyItem.colRowMoved }` :
         'Go to game start'
+      }
 
       if (move === this.state.stepNumber) {
         desc = `<b>${ desc }</b>`
@@ -144,10 +154,19 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{ status }</div>
+          <button onClick={ () => this.toggleOrder() }>Toggle</button>
           <ol>{ moves }</ol>
         </div>
       </div>
     );
+  }
+
+  toggleOrder() {
+    const history = this.state.history.slice().reverse()
+    this.setState({
+      orderToggled: !this.state.orderToggled,
+      history
+    })
   }
 }
 
