@@ -48,3 +48,7 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
+
+.bg-red {
+  background-color: #82d8f7;
+}
